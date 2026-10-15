@@ -28,3 +28,50 @@ The project currently provides a single-vehicle simulation core. Vehicles track 
 +-----------------------------+
 ```
 
+## Build and Run
+
+For a complete configure, build, test, and run cycle, use the helper script:
+
+```bash
+bash run.bash
+```
+
+The individual commands are also available when you need to run one step at a time.
+
+Configure and build the project with CMake:
+
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+Run the demonstration executable:
+
+```bash
+./build/cpp_tactical_simulation
+```
+
+Run the test suite:
+
+```bash
+ctest --test-dir build --output-on-failure
+```
+
+Remove generated build artifacts with:
+
+```bash
+cmake --build build --target clean
+```
+
+## Repository Layout
+
+```text
+src/vehicle.hpp       Vehicle state and public API
+src/vehicle.cpp       Vehicle behavior and validation
+src/main.cpp          Small executable demonstration
+tests/vehicle_test.cpp Vehicle behavior tests
+CMakeLists.txt        Build and test configuration
+run.bash              Quick configure, build, test, and run script
+```
+
+
