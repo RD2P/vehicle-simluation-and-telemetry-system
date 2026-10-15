@@ -26,6 +26,11 @@ public:
 	explicit Vehicle(VehicleState state = {});
 
 	const VehicleState& state() const noexcept;
+	bool activate();
+	bool deactivate();
+	bool disable();
+	void set_heading(double heading_degrees);
+	void set_speed(double speed_meters_per_second);
 	void update(double delta_seconds);
 
 private:
