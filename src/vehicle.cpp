@@ -26,6 +26,10 @@ void validate_state(const VehicleState& state) {
 	if (state.battery_percent < 0.0 || state.battery_percent > 100.0) {
 		throw std::invalid_argument("vehicle battery must be between 0 and 100 percent");
 	}
+
+	if (state.operational_state == OperationalState::Active && state.battery_percent == 0.0) {
+		throw std::invalid_argument("vehicle with no battery cannot be active");
+	}
 }
 
 }  // namespace
@@ -36,6 +40,49 @@ Vehicle::Vehicle(VehicleState state) : state_(state) {
 
 const VehicleState& Vehicle::state() const noexcept {
 	return state_;
+}
+
+bool Vehicle::activate() {
+	if (state_.operational_state != OperationalState::Idle || state_.battery_percent == 0.0) {
+		return false;
+	}
+
+	state_.operational_state = OperationalState::Active;
+	return true;
+}
+
+bool Vehicle::deactivate() {
+	if (state_.operational_state != OperationalState::Active) {
+		return false;
+	}
+
+	state_.operational_state = OperationalState::Idle;
+	return true;
+}
+
+bool Vehicle::disable() {
+	if (state_.operational_state == OperationalState::Disabled) {
+		return false;
+	}
+
+	state_.operational_state = OperationalState::Disabled;
+	return true;
+}
+
+void Vehicle::set_heading(double heading_degrees) {
+	if (!std::isfinite(heading_degrees)) {
+		throw std::invalid_argument("vehicle heading must be finite");
+	}
+
+	state_.heading_degrees = heading_degrees;
+}
+
+void Vehicle::set_speed(double speed_meters_per_second) {
+	if (!std::isfinite(speed_meters_per_second) || speed_meters_per_second < 0.0) {
+		throw std::invalid_argument("vehicle speed must be finite and non-negative");
+	}
+
+	state_.speed_meters_per_second = speed_meters_per_second;
 }
 
 void Vehicle::update(double delta_seconds) {
